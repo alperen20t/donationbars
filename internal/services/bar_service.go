@@ -322,7 +322,7 @@ func (s *BarService) CheckDailyRateLimit(userID string) error {
 		return err
 	}
 
-	// cursorrules.rules: günlük maksimum 5 bar
+	// günlük maksimum 5 bar
 	if dailyCount >= 5 {
 		return apperrors.RateLimitError(userID, 5)
 	}

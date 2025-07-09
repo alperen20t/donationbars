@@ -184,7 +184,7 @@ func (h *Handler) CreateBarAIForm(c *gin.Context) {
 		userID = "test-user"
 	}
 
-	// Check daily rate limit (cursorrules.rules: 5 bars/day)
+	// Check daily rate limit (5 bars/day)
 	dailyCount, err := h.barService.GetUserDailyBarCount(userID)
 	if err == nil && dailyCount >= 5 {
 		c.HTML(http.StatusBadRequest, "create.html", gin.H{
