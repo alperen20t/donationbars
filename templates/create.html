@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/create.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <p class="subtitle">Yeni Donation Bar Oluştur</p>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                    <a href="/create" class="nav-link active">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Error Messages -->
+        {{if .Error}}
+        <div class="alert alert-error">❌ {{.Error}}</div>
+        {{end}}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Mode Selection -->
+            {{if not .Mode}}
+            <div class="mode-selection">
+                <h2>🚀 Oluşturma Yöntemi Seç</h2>
+                <div class="mode-cards">
+                    <a href="/create?mode=ai" class="mode-card">
+                        <div class="mode-icon">🤖</div>
+                        <h3>AI ile Oluştur</h3>
+                        <p>Doğal dilinle istediğin donation bar'ı AI ile oluştur</p>
+                        <div class="mode-features">
+                            <span>✨ Hızlı ve kolay</span>
+                            <span>🎨 Otomatik tasarım</span>
+                            <span>🌍 Çok dil desteği</span>
+                        </div>
+                    </a>
+                    <a href="/create?mode=manual" class="mode-card">
+                        <div class="mode-icon">✏️</div>
+                        <h3>Manuel Oluştur</h3>
+                        <p>Kendi HTML/CSS kodunla custom bar tasarla</p>
+                        <div class="mode-features">
+                            <span>⚡ Tam kontrol</span>
+                            <span>🔧 Özelleştirilebilir</span>
+                            <span>💻 Kod editörü</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {{end}}
+
+            <!-- AI Creation Form -->
+            {{if eq .Mode "ai"}}
+            <div class="creation-form">
+                <div class="form-section">
+                    <h2>🤖 AI ile Donation Bar Oluştur</h2>
+                    <p>Aşağıdaki forma istediğin donation bar'ın nasıl olacağını anlat. AI senin için hem HTML hem CSS kodunu otomatik oluşturacak.</p>
+                    
+                    <form action="/create/ai" method="POST">
+                        <div class="form-group">
+                            <label for="prompt">🎯 İstek (Prompt) *</label>
+                            <textarea 
+                                id="prompt" 
+                                name="prompt" 
+                                placeholder="Örn: Cyberpunk temalı, neon efektli, mor ve mavi renklerde bir donation bar istiyorum. Progress bar animasyonlu olsun ve modern görünsün."
+                                rows="4"
+                                required
+                                minlength="10"
+                                maxlength="1000"></textarea>
+                            <small>En az 10, en fazla 1000 karakter. Ne kadar detaylı anlatırsan, AI o kadar iyi sonuç verir.</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="language">🌍 Dil *</label>
+                                <select id="language" name="language" required>
+                                    <option value="tr">Türkçe</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="theme">🎨 Tema (Opsiyonel)</label>
+                                <input 
+                                    type="text" 
+                                    id="theme" 
+                                    name="theme" 
+                                    placeholder="cyberpunk, minimal, gaming, modern..."
+                                    maxlength="50">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="initial_amount">💰 Başlangıç Tutarı (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="initial_amount" 
+                                    name="initial_amount" 
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    value="0"
+                                    required>
+                                <small>Şu anki toplanan tutar</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal_amount">🎯 Hedef Tutar (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="goal_amount" 
+                                    name="goal_amount" 
+                                    placeholder="1000"
+                                    min="0.01"
+                                    step="0.01"
+                                    required>
+                                <small>Ulaşılmak istenen hedef tutar</small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="/create" class="btn btn-outline">İptal</a>
+                            <button type="submit" class="btn btn-primary">
+                                🚀 AI ile Oluştur
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+
+            <!-- Manual Creation Form -->
+            {{if eq .Mode "manual"}}
+            <div class="creation-form">
+                <div class="form-section">
+                    <h2>✏️ Manuel Donation Bar Oluştur</h2>
+                    <p>Kendi HTML ve CSS kodunu yazarak donation bar oluştur. Zorunlu injection alanlarını unutma!</p>
+                    
+                    <form action="/create" method="POST">
+                        <div class="form-group">
+                            <label for="name">📝 Bar Adı *</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                placeholder="Örn: Minimal Progress Bar"
+                                required
+                                minlength="1"
+                                maxlength="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">📄 Açıklama (Opsiyonel)</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                placeholder="Bu bar'ın ne için kullanılacağını açıkla..."
+                                rows="2"
+                                maxlength="500"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="language">🌍 Dil *</label>
+                                <select id="language" name="language" required>
+                                    <option value="tr">Türkçe</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="theme">🎨 Tema (Opsiyonel)</label>
+                                <input 
+                                    type="text" 
+                                    id="theme" 
+                                    name="theme" 
+                                    placeholder="minimal, modern, colorful..."
+                                    maxlength="50">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="initial_amount">💰 Başlangıç Tutarı (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="initial_amount" 
+                                    name="initial_amount" 
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    value="0"
+                                    required>
+                                <small>Şu anki toplanan tutar</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal_amount">🎯 Hedef Tutar (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="goal_amount" 
+                                    name="goal_amount" 
+                                    placeholder="1000"
+                                    min="0.01"
+                                    step="0.01"
+                                    required>
+                                <small>Ulaşılmak istenen hedef tutar</small>
+                            </div>
+                        </div>
+
+                        <div class="code-section">
+                            <div class="injection-info">
+                                <h3>🔗 Zorunlu Injection Alanları</h3>
+                                <p>Aşağıdaki alanları HTML koduna dahil etmelisin:</p>
+                                <div class="injection-tags">
+                                    <code>{goal}</code>
+                                    <code>{total}</code>
+                                    <code>{percentage}</code>
+                                    <code>{remaining}</code>
+                                    <code>{description}</code>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="html">📄 HTML Kodu *</label>
+                                <textarea 
+                                    id="html" 
+                                    name="html" 
+                                    placeholder='<div class="donation-bar">
+  <div class="description">{description}</div>
+  <div class="progress-section">
+    <div class="progress-track">
+      <div class="progress-fill" style="width: {percentage}%"></div>
+    </div>
+                                        <div class="center-info">
+                                      <span class="amount">{total} ₺</span>
+                                      <span class="percentage">%{percentage}</span>
+                                      <span class="remaining">Kalan: {remaining} ₺</span>
+                                    </div>
+  </div>
+  <div class="amounts-row">
+    <span class="start-amount">Toplanan ç: {total} ₺</span>
+    <span class="goal-amount">Hedef: {goal} ₺</span>
+  </div>
+</div>'
+                                    rows="12"
+                                    required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="css">🎨 CSS Kodu *</label>
+                                <textarea 
+                                    id="css" 
+                                    name="css" 
+                                    placeholder='.donation-bar {
+  width: 800px;
+  height: 160px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  border-radius: 15px;
+  font-family: Arial, sans-serif;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.description {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.progress-section {
+  position: relative;
+  margin: 20px 0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 25px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #56ab2f, #a8e6cf);
+  border-radius: 15px;
+  transition: width 0.8s ease;
+  box-shadow: 0 0 15px rgba(86,171,47,0.5);
+}
+
+.center-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.amount {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.percentage {
+  display: block;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.remaining {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.amounts-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.start-amount, .goal-amount {
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+}'
+                                    rows="25"
+                                    required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="/create" class="btn btn-outline">İptal</a>
+                            <button type="submit" class="btn btn-primary">
+                                ✅ Bar'ı Oluştur
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+        </footer>
+    </div>
+</body>
+</html> 

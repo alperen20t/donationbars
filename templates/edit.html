@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/create.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <p class="subtitle">Donation Bar Düzenle</p>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                    <a href="/create" class="nav-link">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Error/Success Messages -->
+        {{if .Error}}
+        <div class="alert alert-error">❌ {{.Error}}</div>
+        {{end}}
+        {{if .Success}}
+        <div class="alert alert-success">✅ {{.Success}}</div>
+        {{end}}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="creation-form">
+                <div class="form-section">
+                    <h2>✏️ Bar Düzenle: {{.Bar.Name}}</h2>
+                    
+                    {{if .Bar.AIGenerated}}
+                    <div class="alert alert-info">
+                        🤖 Bu bar AI tarafından oluşturulmuştur. Temel bilgileri düzenleyebilir, ancak HTML/CSS kodunu değiştiremezsiniz.
+                    </div>
+                    {{end}}
+                    
+                    <form action="/edit/{{.Bar.ID.Hex}}" method="POST">
+                        <div class="form-group">
+                            <label for="name">📝 Bar Adı *</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                value="{{.Bar.Name}}"
+                                placeholder="Örn: Minimal Progress Bar"
+                                required
+                                minlength="1"
+                                maxlength="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">📄 Açıklama</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                placeholder="Bu bar'ın ne için kullanılacağını açıkla..."
+                                rows="2"
+                                maxlength="500">{{.Bar.Description}}</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="language">🌍 Dil *</label>
+                                <select id="language" name="language" required>
+                                    <option value="tr" {{if eq .Bar.Language "tr"}}selected{{end}}>Türkçe</option>
+                                    <option value="en" {{if eq .Bar.Language "en"}}selected{{end}}>English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="theme">🎨 Tema</label>
+                                <input 
+                                    type="text" 
+                                    id="theme" 
+                                    name="theme" 
+                                    value="{{.Bar.Theme}}"
+                                    placeholder="cyberpunk, minimal, gaming, modern..."
+                                    maxlength="50">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="initial_amount">💰 Başlangıç Tutarı (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="initial_amount" 
+                                    name="initial_amount" 
+                                    value="{{.Bar.InitialAmount}}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    required>
+                                <small>Şu anki toplanan tutar</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal_amount">🎯 Hedef Tutar (₺) *</label>
+                                <input 
+                                    type="number" 
+                                    id="goal_amount" 
+                                    name="goal_amount" 
+                                    value="{{.Bar.GoalAmount}}"
+                                    placeholder="1000"
+                                    min="0.01"
+                                    step="0.01"
+                                    required>
+                                <small>Ulaşılmak istenen hedef tutar</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="is_active">⚡ Durum</label>
+                            <select id="is_active" name="is_active" required>
+                                <option value="true" {{if .Bar.IsActive}}selected{{end}}>Aktif</option>
+                                <option value="false" {{if not .Bar.IsActive}}selected{{end}}>Pasif</option>
+                            </select>
+                        </div>
+
+                        {{if not .Bar.AIGenerated}}
+                        <div class="code-section">
+                            <div class="injection-info">
+                                <h3>🔗 Zorunlu Injection Alanları</h3>
+                                <p>Aşağıdaki alanları HTML koduna dahil etmelisin:</p>
+                                <div class="injection-tags">
+                                    <code>{goal}</code>
+                                    <code>{total}</code>
+                                    <code>{percentage}</code>
+                                    <code>{remaining}</code>
+                                    <code>{description}</code>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="html">📄 HTML Kodu *</label>
+                                <textarea 
+                                    id="html" 
+                                    name="html" 
+                                    rows="10"
+                                    required>{{.Bar.HTML}}</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="css">🎨 CSS Kodu *</label>
+                                <textarea 
+                                    id="css" 
+                                    name="css" 
+                                    rows="10"
+                                    required>{{.Bar.CSS}}</textarea>
+                            </div>
+                        </div>
+                        {{else}}
+                        <!-- Readonly Code Display for AI Generated Bars -->
+                        <div class="code-section">
+                            <div class="code-readonly">
+                                <div class="code-header">
+                                    <h3>📄 HTML Kodu (Sadece Görüntüleme)</h3>
+                                    <button class="copy-btn" onclick="copyToClipboard('html-readonly-code', this)">📋 Kopyala</button>
+                                </div>
+                                <div class="code-display" id="html-readonly-code">{{.Bar.HTML}}</div>
+                            </div>
+                            <div class="code-readonly">
+                                <div class="code-header">
+                                    <h3>🎨 CSS Kodu (Sadece Görüntüleme)</h3>
+                                    <button class="copy-btn" onclick="copyToClipboard('css-readonly-code', this)">📋 Kopyala</button>
+                                </div>
+                                <div class="code-display" id="css-readonly-code">{{.Bar.CSS}}</div>
+                            </div>
+                            <div class="code-readonly">
+                                <div class="code-header">
+                                    <h3>📦 Tüm Kod (HTML + CSS)</h3>
+                                    <button class="copy-btn" onclick="copyToClipboard('combined-readonly-code', this)">📋 Kopyala</button>
+                                </div>
+                                <div class="code-display" id="combined-readonly-code"></div>
+                            </div>
+                        </div>
+                        {{end}}
+
+                        <div class="form-actions">
+                            <a href="/manage" class="btn btn-outline">❌ İptal</a>
+                            <a href="/preview/{{.Bar.ID.Hex}}" class="btn btn-outline" target="_blank">👁️ Önizle</a>
+                            <button type="submit" class="btn btn-primary">
+                                💾 Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Bar Info -->
+                <div class="form-section">
+                    <h3>📊 Bar Bilgileri</h3>
+                    <div class="bar-meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">🆔 ID:</span>
+                            <span class="meta-value">{{.Bar.ID.Hex}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">📅 Oluşturulma:</span>
+                            <span class="meta-value">{{.Bar.CreatedAt.Format "02.01.2006 15:04"}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">🔄 Son Güncelleme:</span>
+                            <span class="meta-value">{{.Bar.UpdatedAt.Format "02.01.2006 15:04"}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">🤖 AI Oluşturuldu:</span>
+                            <span class="meta-value">{{if .Bar.AIGenerated}}Evet{{else}}Hayır{{end}}</span>
+                        </div>
+                        {{if .Bar.AIGenerated}}
+                        <div class="meta-item">
+                            <span class="meta-label">💬 AI Prompt:</span>
+                            <span class="meta-value">{{.Bar.Prompt}}</span>
+                        </div>
+                        {{end}}
+                        <div class="meta-item">
+                            <span class="meta-label">✅ Injection Kontrol:</span>
+                            <span class="meta-value">{{if .Bar.HasValidInjections}}Geçerli{{else}}Eksik{{end}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+        </footer>
+    </div>
+
+    <style>
+        .code-readonly {
+            margin-bottom: 1rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .code-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .code-display {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .bar-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .meta-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .meta-value {
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .alert-info {
+            background: #e7f3ff;
+            color: #0c4a6e;
+            border: 1px solid #bfdbfe;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        // Copy to clipboard function
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            let text = element.textContent || element.innerText;
+            
+            // Clean up extra whitespace and formatting
+            text = text.trim();
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    // Visual feedback
+                    const originalText = button.textContent;
+                    button.textContent = '✅ Kopyalandı!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(function() {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Kopyalama hatası:', err);
+                    fallbackCopyTextToClipboard(text, button);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text, button);
+            }
+        }
+
+        // Fallback copy function
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const originalText = button.textContent;
+                    button.textContent = '✅ Kopyalandı!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(function() {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    alert('Kopyalama başarısız! Kodu manuel olarak seçip kopyalayın.');
+                }
+            } catch (err) {
+                console.error('Fallback kopyalama hatası:', err);
+                alert('Kopyalama başarısız! Kodu manuel olarak seçip kopyalayın.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Populate combined code section for AI generated bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const combinedCode = document.getElementById('combined-readonly-code');
+            
+            if (combinedCode) {
+                const htmlCode = `{{.Bar.HTML}}`;
+                const cssCode = `{{.Bar.CSS}}`;
+                
+                const combinedContent = `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+/* AI Generated CSS */
+${cssCode}
+/* End CSS */
+    </style>
+</head>
+<body>
+${htmlCode}
+</body>
+</html>`;
+                
+                combinedCode.textContent = combinedContent;
+            }
+        });
+    </script>
+</body>
+</html> 

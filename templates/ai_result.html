@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/create.css">
+    <style>
+        .result-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .result-header h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-meta {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #007bff;
+        }
+        
+        .code-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .code-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .code-content {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .preview-section.has-content {
+            border-style: solid;
+            border-color: #007bff;
+            background: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #6c757d;
+            border: 2px solid #dee2e6;
+        }
+        
+        .btn-outline:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        .injection-info {
+            background: #e7f3ff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #007bff;
+        }
+        
+        .injection-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .injection-tags code {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <p class="subtitle">AI Sonucu</p>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                    <a href="/create" class="nav-link">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="result-container">
+            <!-- Result Header -->
+            <div class="result-header">
+                <h1>🎉 AI ile Donation Bar Oluşturuldu!</h1>
+                <p>AI tarafından özel olarak senin için oluşturulan donation bar aşağıda hazır.</p>
+            </div>
+
+            <!-- Request Meta -->
+            <div class="result-meta">
+                <h3>📝 İstek Detayları</h3>
+                <p><strong>Prompt:</strong> {{.Prompt}}</p>
+                <p><strong>Dil:</strong> {{if eq .Language "tr"}}Türkçe{{else}}English{{end}}</p>
+                {{if .Theme}}<p><strong>Tema:</strong> {{.Theme}}</p>{{end}}
+                <p><strong>💰 Başlangıç Tutarı:</strong> {{.InitialAmount}} ₺</p>
+                <p><strong>🎯 Hedef Tutar:</strong> {{.GoalAmount}} ₺</p>
+                <p><strong>Oluşturulma:</strong> {{.CreatedAt}}</p>
+            </div>
+
+            <!-- Injection Info -->
+            <div class="injection-info">
+                <h4>🔗 Injection Alanları Kontrol Edildi ✅</h4>
+                <p>Aşağıdaki zorunlu alanlar AI tarafından otomatik olarak HTML koduna dahil edilmiştir:</p>
+                <div class="injection-tags">
+                    <code>{goal}</code>
+                    <code>{total}</code>
+                    <code>{percentage}</code>
+                    <code>{remaining}</code>
+                    <code>{description}</code>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="code-section">
+                <h3>📺 Önizleme (Test Verileri ile)</h3>
+                <div class="preview-section has-content" id="preview-container">
+                    <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; overflow: auto;">
+                        <div id="ai-preview-content">
+                            {{.PreviewHTML}}
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: #6c757d; font-size: 0.9rem; margin-top: 1rem;">
+                    <small>Bu önizlemede test verileri kullanılmıştır. OBS'de gerçek bağış verileri otomatik olarak doldurulacaktır.</small>
+                </p>
+            </div>
+
+            <!-- HTML Code Section -->
+            <div class="code-section">
+                <div class="code-header">
+                    <h3>📄 HTML Kodu</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('html-code', this)">📋 Kopyala</button>
+                </div>
+                <div class="code-content" id="html-code">{{.RawHTML}}</div>
+            </div>
+
+            <!-- CSS Code Section -->
+            <div class="code-section">
+                <div class="code-header">
+                    <h3>🎨 CSS Kodu</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('css-code', this)">📋 Kopyala</button>
+                </div>
+                <div class="code-content" id="css-code">{{.RawCSS}}</div>
+            </div>
+
+            <!-- Combined Code Section -->
+            <div class="code-section">
+                <div class="code-header">
+                    <h3>📦 Tüm Kod (HTML + CSS)</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('combined-code', this)">📋 Kopyala</button>
+                </div>
+                <div class="code-content" id="combined-code"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <form action="/create/ai/save" method="POST" style="display: inline;">
+                    <input type="hidden" name="prompt" value="{{.Prompt}}">
+                    <input type="hidden" name="language" value="{{.Language}}">
+                    <input type="hidden" name="theme" value="{{.Theme}}">
+                    <input type="hidden" name="html" value="{{.RawHTML}}">
+                    <input type="hidden" name="css" value="{{.RawCSS}}">
+                    <input type="hidden" name="initial_amount" value="{{.InitialAmount}}">
+                    <input type="hidden" name="goal_amount" value="{{.GoalAmount}}">
+                    <button type="submit" class="btn btn-primary">
+                        💾 Bar'ı Kaydet
+                    </button>
+                </form>
+                <a href="/create?mode=ai" class="btn btn-outline">
+                    🤖 Yeni AI Bar Oluştur
+                </a>
+                <a href="/" class="btn btn-outline">
+                    🏠 Ana Sayfaya Dön
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+        </footer>
+    </div>
+
+    <script>
+        // Copy to clipboard function
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            let text = element.textContent || element.innerText;
+            
+            // Clean up extra whitespace and formatting
+            text = text.trim();
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    // Visual feedback
+                    const originalText = button.textContent;
+                    button.textContent = '✅ Kopyalandı!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(function() {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Kopyalama hatası:', err);
+                    fallbackCopyTextToClipboard(text, button);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text, button);
+            }
+        }
+
+        // Fallback copy function
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const originalText = button.textContent;
+                    button.textContent = '✅ Kopyalandı!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(function() {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    alert('Kopyalama başarısız! Kodu manuel olarak seçip kopyalayın.');
+                }
+            } catch (err) {
+                console.error('Fallback kopyalama hatası:', err);
+                alert('Kopyalama başarısız! Kodu manuel olarak seçip kopyalayın.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Apply AI CSS to preview and populate combined code
+        document.addEventListener('DOMContentLoaded', function() {
+            const previewContent = document.getElementById('ai-preview-content');
+            const cssCode = document.getElementById('css-code');
+            const combinedCode = document.getElementById('combined-code');
+            
+            if (previewContent && cssCode) {
+                // Create style element for AI CSS
+                const styleElement = document.createElement('style');
+                styleElement.textContent = cssCode.textContent;
+                document.head.appendChild(styleElement);
+            }
+
+            // Populate combined code section
+            if (combinedCode) {
+                const htmlCode = `{{.RawHTML}}`;
+                const cssCodeText = `{{.RawCSS}}`;
+                
+                const combinedContent = `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+/* AI Generated CSS */
+${cssCodeText}
+/* End CSS */
+    </style>
+</head>
+<body>
+${htmlCode}
+</body>
+</html>`;
+                
+                combinedCode.textContent = combinedContent;
+            }
+        });
+    </script>
+</body>
+</html> 

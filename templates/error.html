@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                    <a href="/create" class="nav-link">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="error-container" style="text-align: center; padding: 3rem;">
+                <div class="error-icon" style="font-size: 4rem; margin-bottom: 2rem;">⚠️</div>
+                <h1 style="color: #dc3545; margin-bottom: 1rem;">Bir Hata Oluştu</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">{{.Error}}</p>
+                <a href="/" class="btn btn-primary">🏠 Ana Sayfaya Dön</a>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+        </footer>
+    </div>
+</body>
+</html> 

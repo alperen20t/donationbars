@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <p class="subtitle">Bar Yönetimi ve Düzenleme</p>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                    <a href="/create" class="nav-link">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link active">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Success/Error Messages -->
+        {{if .Success}}
+        <div class="alert alert-success">✅ {{.Success}}</div>
+        {{end}}
+        {{if .Error}}
+        <div class="alert alert-error">❌ {{.Error}}</div>
+        {{end}}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="section-header">
+                <h2>⚙️ Donation Bar Yönetimi</h2>
+                <form action="/manage" method="GET" style="display: inline;">
+                    <button type="submit" class="btn btn-outline">🔄 Yenile</button>
+                </form>
+            </div>
+            
+            <div class="management-info">
+                <p>Bu sayfada mevcut donation bar'larını yönetebilir, durumlarını değiştirebilir ve silebilirsin.</p>
+                <div class="quick-stats">
+                    <span>Toplam Bar: <strong>{{.TotalBars}}</strong></span>
+                    <span>Aktif Bar: <strong>{{.ActiveBars}}</strong></span>
+                </div>
+            </div>
+
+            {{if .Bars}}
+            <div class="bars-list">
+                {{range .Bars}}
+                <div class="bar-card {{if .IsActive}}active{{end}}">
+                    <div class="bar-header">
+                        <div class="bar-title">{{.Name}}</div>
+                        <div class="bar-status {{if .IsActive}}active{{else}}inactive{{end}}">
+                            {{if .IsActive}}Aktif{{else}}Pasif{{end}}
+                        </div>
+                    </div>
+                    
+                    <div class="bar-meta">
+                        <div>📅 {{.CreatedAt.Format "02.01.2006 15:04"}}</div>
+                        <div>🌐 {{if eq .Language "tr"}}Türkçe{{else}}English{{end}}</div>
+                        {{if .AIGenerated}}<div>🤖 AI ile Oluşturuldu</div>{{end}}
+                        {{if .Theme}}<div>🎨 {{.Theme}}</div>{{end}}
+                    </div>
+                    
+                    <div class="bar-preview">
+                        <strong>HTML Preview:</strong><br>
+                        <code>{{printf "%.100s" .HTML}}{{if gt (len .HTML) 100}}...{{end}}</code>
+                    </div>
+                    
+                    <div class="bar-actions">
+                        <a href="/preview/{{.ID.Hex}}" class="btn btn-small btn-primary" target="_blank">
+                            👁️ Önizle
+                        </a>
+                        <a href="/edit/{{.ID.Hex}}" class="btn btn-small btn-outline">
+                            ✏️ Düzenle
+                        </a>
+                        <form action="/manage/{{.ID.Hex}}/toggle" method="POST" style="display: inline;">
+                            <input type="hidden" name="is_active" value="{{if .IsActive}}false{{else}}true{{end}}">
+                            <button type="submit" class="btn btn-small {{if .IsActive}}btn-danger{{else}}btn-success{{end}}">
+                                {{if .IsActive}}⏸️ Pasifle{{else}}▶️ Aktifle{{end}}
+                            </button>
+                        </form>
+                        <form action="/manage/{{.ID.Hex}}/delete" method="POST" style="display: inline;"
+                              onsubmit="return confirm('{{.Name}} adlı barı silmek istediğinizden emin misiniz?')">
+                            <button type="submit" class="btn btn-small btn-danger">
+                                🗑️ Sil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>Henüz donation bar'ın yok</h3>
+                <p>İlk donation bar'ını oluşturmak için başla!</p>
+                <a href="/create" class="btn btn-primary">Yeni Bar Oluştur</a>
+            </div>
+            {{end}}
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+        </footer>
+    </div>
+
+    <style>
+        .management-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .quick-stats {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-stats span {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .quick-stats {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+        }
+    </style>
+</body>
+</html> 

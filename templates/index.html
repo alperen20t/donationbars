@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎯 Donation Bars</h1>
+                <p class="subtitle">AI destekli OBS donation bar tasarımcısı</p>
+                <nav class="nav">
+                    <a href="/" class="nav-link active">Ana Sayfa</a>
+                    <a href="/create" class="nav-link">Yeni Bar Oluştur</a>
+                    <a href="/manage" class="nav-link">Bar Yönetimi</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Success/Error Messages -->
+        {{if .Success}}
+        <div class="alert alert-success">✅ {{.Success}}</div>
+        {{end}}
+        {{if .Error}}
+        <div class="alert alert-error">❌ {{.Error}}</div>
+        {{end}}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- User Info -->
+            <div class="user-section">
+                <div class="user-info">
+                    <h2>👋 Hoş Geldin!</h2>
+                    <p>Kullanıcı ID: <span>{{.UserID}}</span></p>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number">{{.TotalBars}}</span>
+                            <span class="stat-label">Toplam Bar</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">{{.ActiveBars}}</span>
+                            <span class="stat-label">Aktif Bar</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">{{.MaxBars}}</span>
+                            <span class="stat-label">Maksimum</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-section">
+                <h2>🚀 Hızlı İşlemler</h2>
+                <div class="action-cards">
+                    <a href="/create?mode=ai" class="action-card primary">
+                        <div class="action-icon">🤖</div>
+                        <h3>AI ile Oluştur</h3>
+                        <p>Doğal dilinle istediğin donation bar'ı AI ile oluştur</p>
+                    </a>
+                    {{if .Bars}}
+                    <a href="/manage" class="action-card">
+                        <div class="action-icon">✏️</div>
+                        <h3>Bar'larımı Düzenle</h3>
+                        <p>Mevcut donation bar'larını düzenle ve özelleştir</p>
+                    </a>
+                    {{else}}
+                    <a href="/create?mode=manual" class="action-card">
+                        <div class="action-icon">✏️</div>
+                        <h3>Manuel Oluştur</h3>
+                        <p>Kendi HTML/CSS kodunla custom bar tasarla</p>
+                    </a>
+                    {{end}}
+                    <a href="/manage" class="action-card">
+                        <div class="action-icon">⚙️</div>
+                        <h3>Bar Yönetimi</h3>
+                        <p>Bar'larını aktifleştir, pasifleştir ve yönet</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bar List -->
+            <div class="bars-section">
+                <div class="section-header">
+                    <h2>📋 Donation Bar'larım</h2>
+                    <div class="filter-controls">
+                        {{if .ShowOnlyActive}}
+                        <a href="/?show_only_active=false" class="btn btn-outline btn-small active-filter">
+                            👁️ Tüm Bar'ları Göster
+                        </a>
+                        <span class="filter-badge">Sadece Aktif Bar'lar Gösteriliyor</span>
+                        {{else}}
+                        <a href="/?show_only_active=true" class="btn btn-primary btn-small active-filter">
+                            ⚡ Sadece Aktif Bar'ları Göster
+                        </a>
+                        {{end}}
+                        <form action="/" method="GET" style="display: inline;">
+                            {{if .ShowOnlyActive}}
+                            <input type="hidden" name="show_only_active" value="true">
+                            {{end}}
+                            <button type="submit" class="btn btn-outline btn-small">🔄 Yenile</button>
+                        </form>
+                    </div>
+                </div>
+
+                {{if .Bars}}
+                <div class="bars-list">
+                    {{range .Bars}}
+                    <div class="bar-card {{if .IsActive}}active{{end}}">
+                        <div class="bar-header">
+                            <div class="bar-title">{{.Name}}</div>
+                            <div class="bar-status {{if .IsActive}}active{{else}}inactive{{end}}">
+                                {{if .IsActive}}Aktif{{else}}Pasif{{end}}
+                            </div>
+                        </div>
+                        
+                        <div class="bar-meta">
+                            <div>📅 {{.CreatedAt.Format "02.01.2006 15:04"}}</div>
+                            <div>🌐 {{if eq .Language "tr"}}Türkçe{{else}}English{{end}}</div>
+                            {{if .AIGenerated}}<div>🤖 AI ile Oluşturuldu</div>{{end}}
+                            {{if .Theme}}<div>🎨 {{.Theme}}</div>{{end}}
+                        </div>
+                        
+                        <div class="bar-preview">
+                            <strong>HTML Preview:</strong><br>
+                            <code>{{printf "%.100s" .HTML}}{{if gt (len .HTML) 100}}...{{end}}</code>
+                        </div>
+                        
+                        <div class="bar-actions">
+                            <a href="/preview/{{.ID.Hex}}" class="btn btn-small btn-primary" target="_blank">
+                                👁️ Önizle
+                            </a>
+                            <a href="/edit/{{.ID.Hex}}" class="btn btn-small btn-outline">
+                                ✏️ Düzenle
+                            </a>
+                            <form action="/manage/{{.ID.Hex}}/toggle" method="POST" style="display: inline;">
+                                <input type="hidden" name="is_active" value="{{if .IsActive}}false{{else}}true{{end}}">
+                                <button type="submit" class="btn btn-small {{if .IsActive}}btn-danger{{else}}btn-success{{end}}">
+                                    {{if .IsActive}}⏸️ Pasifle{{else}}▶️ Aktifle{{end}}
+                                </button>
+                            </form>
+                            <form action="/manage/{{.ID.Hex}}/delete" method="POST" style="display: inline;"
+                                  onsubmit="return confirm('{{.Name}} adlı barı silmek istediğinizden emin misiniz?')">
+                                <button type="submit" class="btn btn-small btn-danger">
+                                    🗑️ Sil
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="empty-state">
+                    <div class="empty-icon">🎭</div>
+                    <h3>Henüz donation bar'ın yok</h3>
+                    <p>İlk donation bar'ını oluşturmak için AI'dan yardım al veya manuel olarak tasarla!</p>
+                    <a href="/create" class="btn btn-primary">İlk Bar'ımı Oluştur</a>
+                </div>
+                {{end}}
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 ByNoGame - Donation Bars System</p>
+            <p>API Status: <span class="status-indicator status-ok">🟢 Çalışıyor</span></p>
+        </footer>
+    </div>
+</body>
+</html> 

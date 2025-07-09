@@ -1,0 +1,454 @@
+/* Create Page Specific Styles */
+
+/* Mode Selection */
+.mode-selection {
+    margin-bottom: 3rem;
+}
+
+.mode-selection h2 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.mode-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    border: 3px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+.mode-card:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+.mode-card.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.mode-card.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    color: #667eea;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.mode-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.mode-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.mode-card p {
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.mode-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mode-features span {
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.mode-card.selected .mode-features span {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Creation Forms */
+.creation-form {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.form-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.form-section p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    background: #fafafa;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group small {
+    display: block;
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Code Section */
+.code-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e9ecef;
+}
+
+.injection-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #667eea;
+}
+
+.injection-info h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.injection-info p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.injection-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.injection-tags code {
+    background: #667eea;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Code Textareas */
+.form-group textarea[name="html"],
+.form-group textarea[name="css"] {
+    font-family: 'Courier New', Monaco, monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+}
+
+.form-group textarea[name="html"]:focus,
+.form-group textarea[name="css"]:focus {
+    background: #fff;
+    border-color: #667eea;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e9ecef;
+    flex-wrap: wrap;
+}
+
+.btn-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-loading .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    margin: 0;
+}
+
+/* Preview Section */
+.preview-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.preview-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+#preview-container {
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    min-height: 200px;
+    overflow: auto;
+}
+
+#preview-container.has-content {
+    border-style: solid;
+    border-color: #667eea;
+    background: white;
+}
+
+.preview-note {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Form Validation States */
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.form-group input.error:focus,
+.form-group textarea.error:focus,
+.form-group select.error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-group .error-message {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group .error-message::before {
+    content: "⚠️";
+}
+
+/* Success States */
+.form-group input.success,
+.form-group textarea.success {
+    border-color: #28a745;
+    background: #f8fff9;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #28a745;
+}
+
+.error-message-global {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #dc3545;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .mode-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .creation-form {
+        padding: 1.5rem;
+    }
+    
+    .injection-tags {
+        justify-content: center;
+    }
+    
+    .mode-card {
+        padding: 1.5rem;
+    }
+    
+    .mode-icon {
+        font-size: 3rem;
+    }
+} 
+
+/* AI Result Page Styles */
+.result-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.result-header h1 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.result-meta {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #007bff;
+}
+
+.code-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.code-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.copy-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: #0056b3;
+}
+
+.copy-btn.copied {
+    background: #28a745;
+}
+
+.code-content {
+    background: #1e1e1e;
+    color: #f8f8f2;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-family: 'Courier New', Monaco, monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+} 
