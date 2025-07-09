@@ -1,4 +1,6 @@
-﻿# Donation Bars
+﻿---
+
+# Donation Bars
 
 AI destekli OBS donation bar tasarımcısı. Kullanıcılar doğal dilde yazdıkları promptlar ile OpenAI GPT-4o-mini kullanarak otomatik donation bar tasarımları oluşturabilir.
 
@@ -27,15 +29,15 @@ Bu uygulama, streamerlerin OBS için donation bar'ları kolayca oluşturmasını
 
 ### Gereksinimler
 
-`
+```
 Go 1.21+
 MongoDB 6.0+
 OpenAI API Key
-`
+```
 
 ### Kurulum
 
-`ash
+```bash
 # Repository klonlama
 git clone https://github.com/alperen20t/donationbars.git
 cd donationbars
@@ -45,13 +47,13 @@ go mod download
 
 # Environment dosyası oluşturma
 cp env.example .env
-`
+```
 
 ### Konfigürasyon
 
-.env dosyasında gerekli ayarları yapın:
+`.env` dosyasında gerekli ayarları yapın:
 
-`env
+```env
 # Database
 MONGO_URI=mongodb://localhost:27017
 DB_NAME=donationbars
@@ -69,11 +71,11 @@ RATE_LIMIT_PER_DAY=5
 # Redis (opsiyonel)
 REDIS_ENABLED=false
 REDIS_ADDR=localhost:6379
-`
+```
 
 ### Çalıştırma
 
-`ash
+```bash
 # MongoDB başlatma (Docker)
 docker run -d -p 27017:27017 --name mongodb mongo:latest
 
@@ -83,53 +85,53 @@ go run cmd/main.go
 # Alternatif: Build edip çalıştırma
 go build -o donationbars cmd/main.go
 ./donationbars
-`
+```
 
-Uygulama http://localhost:8080 adresinde çalışacaktır.
+Uygulama `http://localhost:8080` adresinde çalışacaktır.
 
 ## Proje Yapısı
 
-`
+```
 donationbars/
- cmd/main.go                    # Uygulama giriş noktası
- internal/
-    config/                    # Konfigürasyon yönetimi
-       config.go
-       redis.go
-    handlers/handlers.go       # HTTP handlers (Web + API)
-    services/                  # Business logic
-       bar_service.go
-       ai_service.go
-    repository/                # Database operations
-       bar_repository.go
-    models/bar.go              # Data models
-    interfaces/services.go     # Service interfaces
-    errors/errors.go           # Custom error types
- templates/                     # HTML templates
- static/                        # CSS files
- env.example                    # Environment variables örneği
-`
+├── cmd/main.go                    # Uygulama giriş noktası
+├── internal/
+│   ├── config/                    # Konfigürasyon yönetimi
+│   │   ├── config.go
+│   │   └── redis.go
+│   ├── handlers/handlers.go       # HTTP handlers (Web + API)
+│   ├── services/                  # Business logic
+│   │   ├── bar_service.go
+│   │   └── ai_service.go
+│   ├── repository/                # Database operations
+│   │   └── bar_repository.go
+│   ├── models/bar.go              # Data models
+│   ├── interfaces/services.go     # Service interfaces
+│   └── errors/errors.go           # Custom error types
+├── templates/                     # HTML templates
+├── static/                        # CSS files
+└── env.example                    # Environment variables örneği
+```
 
 ## API Endpoints
 
 ### Health Check
-`
+```
 GET /health
-`
+```
 
 ### Donation Bar İşlemleri
-`
+```
 GET    /api/v1/bars          # Kullanıcının barlarını listele
 GET    /api/v1/bars/:id      # Belirli bar detayı
 POST   /api/v1/bars          # Manuel bar oluştur
 POST   /api/v1/bars/generate # AI ile bar oluştur
 PUT    /api/v1/bars/:id      # Bar güncelle
 DELETE /api/v1/bars/:id      # Bar sil
-`
+```
 
 ### Örnek AI Bar Oluşturma
 
-`ash
+```bash
 curl -X POST http://localhost:8080/api/v1/bars/generate \
   -H "Content-Type: application/json" \
   -H "X-User-ID: test-user" \
@@ -140,7 +142,7 @@ curl -X POST http://localhost:8080/api/v1/bars/generate \
     "initial_amount": 100,
     "goal_amount": 1000
   }'
-`
+```
 
 ## Teknik Detaylar
 
@@ -154,9 +156,9 @@ Proje Clean Architecture prensiplerine uygun yapılandırılmıştır:
 
 ### Database Schema
 
-MongoDB'de donation_bars collection'ında her bar şu alanları içerir:
+MongoDB'de `donation_bars` collection'ında her bar şu alanları içerir:
 
-`json
+```json
 {
   "_id": "ObjectId",
   "user_id": "string",
@@ -175,7 +177,7 @@ MongoDB'de donation_bars collection'ında her bar şu alanları içerir:
   "prompt": "string",
   "has_valid_injections": "boolean"
 }
-`
+```
 
 ### Rate Limiting
 
@@ -186,11 +188,11 @@ MongoDB'de donation_bars collection'ında her bar şu alanları içerir:
 ### Injection Fields
 
 Donation bar'larda kullanılabilecek dinamik alanlar:
-- {goal}: Hedef tutar
-- {total}: Toplanan tutar
-- {percentage}: Tamamlanma yüzdesi
-- {remaining}: Kalan tutar
-- {description}: Bar açıklaması
+- `{goal}`: Hedef tutar
+- `{total}`: Toplanan tutar
+- `{percentage}`: Tamamlanma yüzdesi
+- `{remaining}`: Kalan tutar
+- `{description}`: Bar açıklaması
 
 ### Güvenlik Önlemleri
 
@@ -202,7 +204,7 @@ Donation bar'larda kullanılabilecek dinamik alanlar:
 
 ## Test
 
-`ash
+```bash
 # Unit testleri çalıştırma
 go test ./...
 
@@ -211,13 +213,13 @@ go test -cover ./...
 
 # Specific package test
 go test ./internal/services/
-`
+```
 
 ## Deployment
 
 ### Docker
 
-`dockerfile
+```dockerfile
 FROM golang:1.21-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -232,11 +234,11 @@ COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/static ./static
 EXPOSE 8080
 CMD ["./donationbars"]
-`
+```
 
 ### Docker Compose
 
-`yaml
+```yaml
 version: '3.8'
 services:
   app:
@@ -265,7 +267,7 @@ services:
 
 volumes:
   mongo_data:
-`
+```
 
 ## Performans
 
@@ -287,19 +289,18 @@ volumes:
 
 | Hata | Çözüm |
 |------|-------|
-| connection refused | MongoDB servisini başlatın |
-| invalid API key | OpenAI API key'inizi kontrol edin |
-| 
-ate limit exceeded | 24 saat bekleyin veya limiti artırın |
-| injection field missing | HTML'de 5 injection field'ın da olduğundan emin olun |
+| `connection refused` | MongoDB servisini başlatın |
+| `invalid API key` | OpenAI API key'inizi kontrol edin |
+| `rate limit exceeded` | 24 saat bekleyin veya limiti artırın |
+| `injection field missing` | HTML'de 5 injection field'ın da olduğundan emin olun |
 
 ### Debug
 
-`ash
+```bash
 # Debug mode
 export LOG_LEVEL=debug
 go run cmd/main.go
 
 # Health check
 curl http://localhost:8080/health
-`
+```
